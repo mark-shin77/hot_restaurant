@@ -24,32 +24,35 @@ app.use(express.urlencoded({
 }));
 app.use(express.json());
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
     console.log("App listening on PORT: " + PORT);
-  });
+});
 // routest
 //routes
-app.get("/", function(req, res){
+app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, 'index.html'))
 })
 
-app.get('/table', function(req,res){
+app.get('/table', function (req, res) {
     res.sendFile(path.join(__dirname, 'table.html'))
 })
 
-app.get('/reserve', function(req, res){
+app.get('/reserve', function (req, res) {
     res.sendFile(path.join(__dirname, 'resrve.html'))
 })
 //call for json tables----------------------------------------
-app.get('/api/tables', function(req, res){
-     return res.json(tables)
+app.get('/api/tables', function (req, res) {
+    return res.json(tables)
 })
 
-app.get('/api/reserve', function(req, res){
-    return res.json(reserve)
+app.get('/api/reserve', function (req, res) {
+    return res.json(waiting)
 })
 
 //----------------------------------------------------
+
+
+
 //switch to handle the different html pages
 function handleRequest(req, res) {
     var path = req.url;
@@ -76,46 +79,71 @@ function handleRequest(req, res) {
     }
 }
 
-var tables =[
-    {routeName: 'test',
-     name: 'test',
-     email: 'test@test.com',
-     unId: 3333333
-     }
-]
-var waiting =[
-    {
-        routeName: 'tester',
-        name: 'tester',
-        email: 'tester@test.com',
-        unId: 666666666
+//------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
+//api tables
+var tables = [{
+    routeName: 'test',
+    name: 'test',
+    email: 'test@test.com',
+    phone: 'xxx-xxx-xxxx',
+    unId: 3333333
+}]
+var waiting = [{
+    routeName: 'tester',
+    name: 'tester',
+    email: 'tester@test.com',
+    phone: 'xxx-xxx-xxxx',
+    unId: 666666666
+}]
+
+app.post('/api/tables', function(req, res){
+    var newTable = req.body
+    console.log(newTable);
+
+    if(tables.length <= 5){
+
+    tables.push(newTable)
+    console.log(tables)
+    res.json(tables)
     }
-]
-
-
+    else{
+        
+        waiting.push(newTable)
+        res.json(waiting)
+    }
+})
 
 //functions for the HTML pages
-function displayIndex(url, req, res){
-    fs.readFile(__dirname+ '/index.html',function(err, data){
-        res.writeHead(200, {'Content-Type': 'text/html'})
+function displayIndex(url, req, res) {
+    fs.readFile(__dirname + '/index.html', function (err, data) {
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        })
         res.end(data)
     })
-    
+
 }
 
-function displayTable(url, req, res){
-    fs.readFile(__dirname+ '/table.html',function(err, data){
-        res.writeHead(200, {'Content-Type': 'text/html'})
+function displayTable(url, req, res) {
+    fs.readFile(__dirname + '/table.html', function (err, data) {
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        })
         res.end(data)
     })
-    
-   
+
+
 }
-function displayReserve(url, req, res){
-    fs.readFile(__dirname+ '/reserve.html',function(err, data){
-        res.writeHead(200, {'Content-Type': 'text/html'})
+
+function displayReserve(url, req, res) {
+    fs.readFile(__dirname + '/reserve.html', function (err, data) {
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        })
         res.end(data)
     })
-    
-   
+
+
 }
+
